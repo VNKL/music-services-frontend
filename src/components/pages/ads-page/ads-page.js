@@ -47,10 +47,18 @@ export default class AdsPage extends React.Component {
         this.api.updateAdsStat(this.campaignId).then(this.onAdsLoaded)
     }
 
+    openCampaignInCabinet = () => {
+        const url = `https://vk.com/ads?act=office&union_id=${this.state.campaign.campaignId}`
+        window.open(url)
+    }
+
     render() {
 
         const {loading, hasData, ads, campaign} = this.state
-        const header = hasData ? <AdsHeader cover={campaign.cover} name={campaign.name} updateStats={this.updateStats} /> : null
+        const header = hasData ? <AdsHeader cover={campaign.cover}
+                                            name={campaign.name}
+                                            updateStats={this.updateStats}
+                                            openCampaignInCabinet={this.openCampaignInCabinet}/> : null
         const table = hasData ? <AdsTableView rows={ads} /> : null
         const spinner = loading ? <AdsPageSkeleton /> : null
         const error = hasData ? null : spinner ? null : <h2>Ошибка с получением данных</h2>

@@ -275,6 +275,7 @@ export default class ApiService {
 
     _unpackCampaign = (campaign) => {
         return {
+            campaignId: campaign.campaign_id,
             name: `${campaign.artist} - ${campaign.title}`,
             spent: campaign.spent.toFixed(2),
             reach: campaign.reach,

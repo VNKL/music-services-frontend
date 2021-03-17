@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 
 const AdsHeader = (props) => {
 
-    const {updateStats} = props
+    const {updateStats, openCampaignInCabinet} = props
 
     return (
         <Grid container alignItems='center' spacing={3}>
@@ -17,7 +17,12 @@ const AdsHeader = (props) => {
             </Grid>
 
             <Grid item xs>
-                <Typography variant='h5'>{props.name}</Typography>
+                <Typography variant='h5'
+                            style={{cursor: 'pointer'}}
+                            onClick={openCampaignInCabinet}
+                >
+                    {props.name}
+                </Typography>
             </Grid>
 
             <Grid item xs={3} sm={3} align='right'>
