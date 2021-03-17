@@ -3,7 +3,6 @@ import NewAutomateForm from "./new-automate-form";
 import Grid from "@material-ui/core/Grid";
 import NewAutomateHelpBlock from "./new-automate-help-block";
 import ApiService from "../../../services/api-service";
-import Spinner from "../../spinner";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import NewAutomateFormSkeleton from "./new-automate-form-skeleton";

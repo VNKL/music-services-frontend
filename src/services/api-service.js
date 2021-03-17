@@ -118,6 +118,10 @@ export default class ApiService {
         }
     }
 
+    async stopAutomate(automateId) {
+        await this.getResponse('ads.stopAutomate', {id: automateId})
+    }
+
     async updateAdsStat(campaignId) {
         const campaign = await this.getResponse('ads.updateCampaignStats', {id: campaignId, extended: 1})
         if (typeof campaign !== "undefined") {
@@ -310,6 +314,7 @@ export default class ApiService {
     _unpackAutomates = (automates) => {
         return automates.map((automate) => {
             return {
+                automateId: automate.id,
                 campaignId: automate.campaign.campaign_id,
                 cover: automate.campaign.cover_url,
                 campaign: automate.campaign.campaign_name,

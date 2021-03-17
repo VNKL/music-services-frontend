@@ -4,7 +4,6 @@ import Spinner from "../../../spinner";
 import AutomatesTableView from "../../../tables/automates-table-view";
 
 
-
 class AutomatesTable extends React.Component {
 
     state = {
@@ -38,9 +37,14 @@ class AutomatesTable extends React.Component {
         }
     }
 
+    handleStop = (automateId) => {
+        this.setState({automateIsStopping: true})
+        this.api.stopAutomate(automateId).then(this.updateAutomates)
+    }
+
     render() {
         const {loading, hasData, automates} = this.state
-        const table = hasData ? <AutomatesTableView rows={automates} /> : null
+        const table = hasData ? <AutomatesTableView rows={automates} handleStop={this.handleStop} /> : null
         const spinner = loading ? <Spinner /> : null
         const error = hasData ? null : spinner ? null : <h2>У тебя еще нет автоматизаций</h2>
 

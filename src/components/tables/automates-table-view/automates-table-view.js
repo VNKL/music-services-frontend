@@ -19,6 +19,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 
 const headCells = [
@@ -27,6 +28,7 @@ const headCells = [
     { id: 'startValue', align: 'left',  label: 'Запуск', tooltip: 'Параметр запуска автоматизации' },
     { id: 'stopValue', align: 'left',  label: 'Остановка', tooltip: 'Параметр остановки автоматизации' },
     { id: 'status', align: 'left', label: 'Статус', tooltip: 'Статус автоматизации' },
+    { id: 'stopButton', align: 'left', label: 'Остановить', tooltip: 'Кнопка остановки автоматизации' },
     { id: 'type', align: 'right', label: 'Параметр', tooltip: 'Автоматизируемый параметр' },
     { id: 'count', align: 'right', label: 'Сумма', tooltip: 'Сумма единиц автоматизируемого параметра' },
     { id: 'targetValue', align: 'right', label: 'tCPV', tooltip: 'target Cost Per Value - заданное значение автоматизируемого параметра' },
@@ -61,6 +63,19 @@ const icons = [
     </Tooltip>,
 
 ]
+
+
+function stopButton(automateId, handleStop) {
+    return (
+        <Tooltip title='Остановлена' >
+            <TableCell align="center" >
+                <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
+                    <StopIcon color='error' onClick={() => handleStop(automateId)}/>
+                </Button>
+            </TableCell>
+        </Tooltip>
+    )
+}
 
 
 function descendingComparator(a, b, orderBy) {
@@ -158,7 +173,7 @@ export default function AutomatesTableView(props) {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const { rows } = props
+    const { rows, handleStop } = props
     const coverSize = dense ? {width: 30, height: 30} : {width: 50, height: 50}
 
     const handleRequestSort = (event, property) => {
@@ -228,6 +243,8 @@ export default function AutomatesTableView(props) {
                                             <TableCell align="left">{row.stopValue}</TableCell>
 
                                             { icons[row.status] }
+
+                                            { stopButton(row.automateId, handleStop) }
 
                                             <TableCell align="right">{row.type}</TableCell>
                                             <TableCell align="right">{row.count}</TableCell>

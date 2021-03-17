@@ -54,7 +54,7 @@ const icons = [
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Удалена'>
+    <Tooltip title='Архивирована'>
         <TableCell align="right" >
             <DeleteIcon color='disabled'/>
         </TableCell>
@@ -152,7 +152,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CampaignsTableView(props) {
     const classes = useStyles();
-    const [order, setOrder] = React.useState('acs');
+    const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('status');
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
