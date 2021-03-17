@@ -16,10 +16,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import LinkIcon from '@material-ui/icons/Link';
+import HelpIcon from '@material-ui/icons/Help';
+import HourglassFullIcon from '@material-ui/icons/HourglassFull';
+import DoneIcon from '@material-ui/icons/Done';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const headCells = [
     { id: 'name', align: 'left', label: 'Сегмент', tooltip: 'Аудитория, которой показывается объявление' },
+    { id: 'approved', align: 'right', label: 'Модерация', tooltip: 'Статус модерации объявления' },
     { id: 'status', align: 'right', label: 'Статус', tooltip: 'Статус объявления' },
     { id: 'spent', align: 'right',  label: 'Потрачено', tooltip: 'Потраченная сумма в рублях' },
     { id: 'reach', align: 'right',  label: 'Показы', tooltip: 'Показы объявлений' },
@@ -35,23 +40,51 @@ const headCells = [
 ]
 
 
-const icons = [
+const statusIcons = [
 
-    <Tooltip title='Остановлен'>
+    <Tooltip title='Остановлено'>
         <TableCell align="right">
             <StopIcon color='disabled' />
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Запущен'>
+    <Tooltip title='Запущено'>
         <TableCell align="right">
             <PlayArrowIcon color='secondary'/>
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Удален'>
+    <Tooltip title='Удалено'>
         <TableCell align="right">
             <DeleteIcon color='disabled'/>
+        </TableCell>
+    </Tooltip>,
+
+]
+
+const approvedIcons = [
+
+    <Tooltip title='Не проходило модерацию'>
+        <TableCell align="right">
+            <HelpIcon color='disabled' />
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='На модерации'>
+        <TableCell align="right">
+            <HourglassFullIcon color='secondary'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Одобрено'>
+        <TableCell align="right">
+            <DoneIcon color='action'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Отклонено'>
+        <TableCell align="right">
+            <CloseIcon color='disabled'/>
         </TableCell>
     </Tooltip>,
 
@@ -210,7 +243,8 @@ export default function AdsTableView(props) {
                                             key={index}
                                         >
                                             <TableCell align="left">{row.name}</TableCell>
-                                            { icons[row.status] }
+                                            { approvedIcons[row.approved] }
+                                            { statusIcons[row.status] }
                                             <TableCell align="right">{row.spent}</TableCell>
                                             <TableCell align="right">{row.reach}</TableCell>
                                             <TableCell align="right">{row.cpm}</TableCell>

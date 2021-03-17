@@ -294,6 +294,7 @@ export default class ApiService {
     _unpackAds = (ads) => {
         return ads.map((ad) => {
             return {
+                approved: ad.approved,
                 status: ad.status,
                 name: ad.ad_name,
                 spent: ad.spent.toFixed(2),
