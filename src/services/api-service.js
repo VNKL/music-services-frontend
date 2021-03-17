@@ -55,6 +55,62 @@ function _date_str_from_param(param) {
     }
 }
 
+function _parsing_method_name_to_russian(method) {
+    if (method === 'get_by_artist_url') {
+        return 'Исполнитель'
+    } else if (method === 'get_by_track_name') {
+        return 'Трек'
+    } else if (method === 'get_by_group') {
+        return 'Аудиозаписи сообщества'
+    } else if (method === 'get_by_playlist') {
+        return 'Аудиозаписи плейлиста'
+    } else if (method === 'get_by_post') {
+        return 'Аудиозаписи поста'
+    } else if (method === 'get_by_newsfeed') {
+        return 'Поиск по новостям'
+    } else if (method === 'get_by_chart') {
+        return ('Чарт ВК')
+    } else if (method === 'get_by_new_releases') {
+        return 'Новинки ВК'
+    } else {
+        return 'Неизвестный метод'
+    }
+}
+
+function _parsing_method_param_true_to_line(param) {
+    if (param === 'True') {
+        return '—'
+    } else {
+        return param
+    }
+}
+
+function _may_audio_be_core(owner_id, audio_id) {
+    const ownerStr = owner_id.toString()
+    const audioStr = audio_id.toString()
+    if (ownerStr.indexOf('4744') !== -1) {
+        return 1
+    } else if (ownerStr.indexOf('3717') !== -1) {
+        return 1
+    } else if (ownerStr.indexOf('-200') !== -1 && audioStr.slice(0, 4).toString() !== '4562') {
+        return 1
+    } else {
+        return 0
+    }
+}
+
+function _post_url_for_audio(post_owner, post_id) {
+    if (post_owner !== null && post_id !== null) {
+        return `https://vk.com/wall${post_owner}_${post_id}`
+    }
+}
+
+function _need_parser_param(method) {
+    if (method !== 'chart' && method !== 'new_releases') {
+        return true
+    }
+}
+
 
 export default class ApiService {
     _apiBaseUrl = 'http://127.0.0.1:8000/api/'
@@ -80,14 +136,19 @@ export default class ApiService {
         window.location.replace(url)
     }
 
+    async createAutomate(automate_params) {
+        const params = this._refactor_automate_params(automate_params)
+        await this._getResponse('ads.createAutomate', params)
+    }
+
     async createCampaign(camp_params) {
         const params = this._refactor_camp_params(camp_params)
         await this._getResponse('ads.createCampaign', params)
     }
 
-    async createAutomate(automate_params) {
-        const params = this._refactor_automate_params(automate_params)
-        await this._getResponse('ads.createAutomate', params)
+    async createParser(parser_params) {
+        const params = this._refactor_parser_params(parser_params)
+        await this._getResponse('parsers.add', params)
     }
 
     async getAds(campaignId) {
@@ -115,6 +176,20 @@ export default class ApiService {
         const campaigns = await this._getResponse('ads.getAllCampaigns')
         if (typeof campaigns !== 'undefined') {
             return this._unpackCampaigns(campaigns)
+        }
+    }
+
+    async getParser(parserId) {
+        const parser = await this._getResponse('parsers.get', {id: parserId, extended: 1})
+        if (typeof parser !== "undefined") {
+            return this._unpackParser(parser)
+        }
+    }
+
+    async getParsers() {
+        const parsers = await this._getResponse('parsers.getAll')
+        if (typeof parsers !== 'undefined') {
+            return this._unpackParsers(parsers)
         }
     }
 
@@ -160,6 +235,26 @@ export default class ApiService {
     }
 
 
+    _refactor_automate_params = (params) => {
+        const refactored_params = {
+            campaign_id: params.campaign,
+            target_cost: params.targetCost,
+            type: params.type,
+        }
+        if (params.startTomorrow) {
+            refactored_params.start = 1
+        }
+        else {
+            refactored_params.start = 0
+        }
+        if (params.finishAutomatically) {
+            refactored_params.finish = 0
+        } else {
+            refactored_params.finish = 1
+        }
+        return refactored_params
+    }
+
     _refactor_camp_params = (params) => {
         let sex = params.sex
         if (params.sex === 'all') {
@@ -188,24 +283,9 @@ export default class ApiService {
         return refactored_params
     }
 
-    _refactor_automate_params = (params) => {
-        const refactored_params = {
-            campaign_id: params.campaign,
-            target_cost: params.targetCost,
-            type: params.type,
-        }
-        if (params.startTomorrow) {
-            refactored_params.start = 1
-        }
-        else {
-            refactored_params.start = 0
-        }
-        if (params.finishAutomatically) {
-            refactored_params.finish = 0
-        } else {
-            refactored_params.finish = 1
-        }
-        return refactored_params
+    _refactor_parser_params = (params) => {
+        const param = _need_parser_param(params.method) ? params.param : 1
+        return  {[params.method]: param}
     }
 
     _unpackAds = (ads) => {
@@ -225,6 +305,22 @@ export default class ApiService {
                 str: `${(ad.sr * 100).toFixed(2)}%`,
                 adUrl: `https://vk.com/ads?act=office&union_id=${ad.ad_id}`,
                 postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`
+            }
+        })
+    }
+
+    _unpackAudios = (audios) => {
+        return audios.map((audio) => {
+            return {
+                artist: audio.artist,
+                title: audio.title,
+                saversCount: audio.savers_count,
+                source: audio.source,
+                date: new Date(audio.date).toLocaleString(),
+                parsingDate: new Date(audio.parsing_date).toLocaleString(),
+                mayBeCore: _may_audio_be_core(audio.owner_id, audio.audio_id),
+                postUrl: _post_url_for_audio(audio.post_owner_id, audio.post_id),
+                chartPosition: audio.chart_position
             }
         })
     }
@@ -315,6 +411,39 @@ export default class ApiService {
                 str: `${(campaign.sr * 100).toFixed(2)}%`,
                 cover: campaign.cover_url,
                 date: new Date(campaign.create_date).toLocaleDateString()
+            }
+        })
+    }
+
+    _unpackParser = (parser) => {
+        return {
+            id: parser.id,
+            methodName: _parsing_method_name_to_russian(parser.method),
+            methodParam: _parsing_method_param_true_to_line(parser.param),
+            parsSavers: parser.count_only ? 0 : 1,
+            status: parser.status,
+            audiosCount: parser.audios_count,
+            saversCount: parser.savers_count,
+            resultPath: parser.result_path,
+            startDate: new Date(parser.start_date).toLocaleString(),
+            finishDate: new Date(parser.finish_date).toLocaleString(),
+            audios: this._unpackAudios(parser.audios)
+        }
+    }
+
+    _unpackParsers = (parsers) => {
+        return parsers.map((parser) => {
+            return {
+                id: parser.id,
+                methodName: _parsing_method_name_to_russian(parser.method),
+                methodParam: _parsing_method_param_true_to_line(parser.param),
+                parsSavers: parser.count_only ? 0 : 1,
+                status: parser.status,
+                audiosCount: parser.audios_count,
+                saversCount: parser.savers_count,
+                resultPath: parser.result_path,
+                startDate: new Date(parser.start_date).toLocaleString(),
+                finishDate: parser.finish_date ? new Date(parser.finish_date).toLocaleString() : '—' ,
             }
         })
     }

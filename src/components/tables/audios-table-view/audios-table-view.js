@@ -8,18 +8,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Avatar from "@material-ui/core/Avatar";
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Tooltip from '@material-ui/core/Tooltip';
-import PauseIcon from '@material-ui/icons/Pause';
-import StopIcon from '@material-ui/icons/Stop';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-
-import Link from "@material-ui/core/Link";
-import {Link as RouterLink} from "react-router-dom";
-import Button from "@material-ui/core/Button";
+import NotInterestedIcon from '@material-ui/icons/NotInterested';
+import DoneIcon from '@material-ui/icons/Done';
+import LinkIcon from "@material-ui/icons/Link";
 
 
 function spacedNumber(x) {
@@ -29,60 +24,46 @@ function spacedNumber(x) {
 }
 
 
-const headCells = [
-    { id: 'cover', align: 'left', label: '', tooltip: 'Обложка продвигаемого релиза' },
-    { id: 'campaign', align: 'left', label: 'Кампания', tooltip: 'Название автоматизированной кампании' },
-    { id: 'startValue', align: 'left',  label: 'Запуск', tooltip: 'Параметр запуска автоматизации' },
-    { id: 'stopValue', align: 'left',  label: 'Остановка', tooltip: 'Параметр остановки автоматизации' },
-    { id: 'status', align: 'left', label: 'Статус', tooltip: 'Статус автоматизации' },
-    { id: 'stopButton', align: 'left', label: 'Остановить', tooltip: 'Кнопка остановки автоматизации' },
-    { id: 'type', align: 'right', label: 'Параметр', tooltip: 'Автоматизируемый параметр' },
-    { id: 'count', align: 'right', label: 'Сумма', tooltip: 'Сумма единиц автоматизируемого параметра' },
-    { id: 'targetValue', align: 'right', label: 'tCPV', tooltip: 'target Cost Per Value - заданное значение автоматизируемого параметра' },
-    { id: 'realValue', align: 'right', label: 'rCPV', tooltip: 'real Cost Per Value - реальное значение автоматизируемого параметра' },
-    { id: 'vtr', align: 'right', label: 'VTR', tooltip: 'Value Through Rate - конверсия в автоматизируемый параметр из показов' },
-    { id: 'spent', align: 'right',  label: 'Потрачено', tooltip: 'Потраченная сумма в рублях' },
-    { id: 'reach', align: 'right',  label: 'Показы', tooltip: 'Показы объявлений' },
-    { id: 'cpm', align: 'right',  label: 'CPM', tooltip: 'Стоимость тысячи показов' },
-    { id: 'createDate', align: 'right',  label: 'Дата создания', tooltip: 'Дата создания автоматизации' },
-    { id: 'finishDate', align: 'right',  label: 'Дата завершения', tooltip: 'Дата завершения автоматизации' },
-]
+function getHeadCells(needChart, needPost) {
+    const headCells = [
+        { id: 'mayBeCore', align: 'left', label: 'МБО', tooltip: 'Аудиозапись может быть основной и ' +
+                                                                 'включать в себя все добавления копий данной аудиозаписи' },
+        { id: 'artist', align: 'left', label: 'Исполнитель', tooltip: 'Исполнитель аудиозаписи' },
+        { id: 'title', align: 'left', label: 'Название', tooltip: 'Название аудиозаписи' },
+        { id: 'source', align: 'left', label: 'Источник', tooltip: 'Источник добавления. Может работать неточно из-за ' +
+                                                                   'особенностей прикрепления аудио к постам' },
+    ]
+    if (needChart === true) {
+        headCells.push({ id: 'chartPosition', align: 'right', label: 'Позиция', tooltip: 'Позиция в чарте' })
+    }
+    if (needPost) {
+        headCells.push({ id: 'postUrl', align: 'right', label: 'Пост', tooltip: 'Ссылка на пост с аудиозаписью. ' +
+                'Добавления могут быть не только из этого поста из-за особенностей прикрепления аудио к постам, ' +
+                'поэтому для лучшего понимания соотноси их с охватом поста' })
+    }
+    headCells.push( { id: 'saversCount', align: 'right', label: 'Добавления', tooltip: 'Добавления аудиозаписи' })
+    headCells.push({ id: 'date', align: 'right', label: 'Дата загрузки', tooltip: 'Дата загрузки аудиозаписи на сервера ВК' })
+    headCells.push({ id: 'parsingDate', align: 'right', label: 'Дата парсинга', tooltip: 'Дата парсинга аудиозаписи' })
+
+    return headCells
+}
 
 
 const icons = [
 
-    <Tooltip title='Остановлена' >
-        <TableCell align="center" >
-            <StopIcon color='disabled' />
+    <Tooltip title='Не может быть основной' >
+        <TableCell align="left" >
+            <NotInterestedIcon color='disabled' />
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Запущена' >
-        <TableCell align="center">
-            <PlayArrowIcon color='secondary'/>
+    <Tooltip title='Может быть основной' >
+        <TableCell align="left">
+            <DoneIcon color='secondary'/>
         </TableCell>
-    </Tooltip>,
-
-    <Tooltip title='Ожидает времени запуска'>
-        <TableCell align="center" >
-            <PauseIcon color='disabled'/>
-        </TableCell>
-    </Tooltip>,
+    </Tooltip>
 
 ]
-
-
-function stopButton(automateId, handleStop) {
-    return (
-        <Tooltip title='Остановить автоматизацию' >
-            <TableCell align="center" >
-                <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
-                    <StopIcon color='error' onClick={() => handleStop(automateId)}/>
-                </Button>
-            </TableCell>
-        </Tooltip>
-    )
-}
 
 
 function descendingComparator(a, b, orderBy) {
@@ -112,7 +93,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-    const { classes, order, orderBy, onRequestSort } = props;
+    const { classes, order, orderBy, onRequestSort, headCells } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -172,16 +153,37 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AutomatesTableView(props) {
+export default function AudiosTableView(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('status');
+    const [orderBy, setOrderBy] = React.useState('saversCount');
     const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [dense, setDense] = React.useState(true);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const { rows, handleStop } = props
-    const coverSize = dense ? {width: 30, height: 30} : {width: 50, height: 50}
+    const { rows, needChart, needPost } = props
+
+    const headCells = getHeadCells(needChart, needPost)
+
+    const getSixthCell = (chartPosition, postUrl) => {
+        if (!needChart && !needPost) {
+            return null
+        } else if (needPost && postUrl !== undefined) {
+            return <Tooltip title='Открыть пост'>
+                <TableCell align="right" onClick={() => {handleOpenPost(postUrl)}} >
+                    <LinkIcon color='secondary' style={{cursor: 'pointer'}}/>
+                </TableCell>
+            </Tooltip>
+        } else if (needChart && chartPosition !== undefined) {
+            return <TableCell align="right">{chartPosition}</TableCell>
+        } else {
+            return <TableCell />
+        }
+    }
+
+    const handleOpenPost = (url) => {
+        window.open(url)
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -222,6 +224,7 @@ export default function AutomatesTableView(props) {
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
                             rowCount={rows.length}
+                            headCells={headCells}
                         />
 
                         <TableBody>
@@ -233,36 +236,18 @@ export default function AutomatesTableView(props) {
                                             hover
                                             key={index}
                                         >
+                                            { icons[row.mayBeCore] }
+                                            <TableCell align="left">{row.artist}</TableCell>
+                                            <TableCell align="left">{row.title}</TableCell>
+                                            <TableCell align="left">{row.source}</TableCell>
 
-                                            <TableCell align="left" >
-                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    <Avatar src={row.cover} alt='cover' style={coverSize} />
-                                                </Link>
-                                            </TableCell>
+                                            { getSixthCell(row.chartPosition, row.postUrl) }
 
-                                            <TableCell align="left" >
-                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    {row.campaign}
-                                                </Link>
-                                            </TableCell>
+                                            <TableCell align="right">{spacedNumber(row.saversCount)}</TableCell>
 
-                                            <TableCell align="left">{row.startValue}</TableCell>
-                                            <TableCell align="left">{row.stopValue}</TableCell>
+                                            <TableCell align="right">{row.date}</TableCell>
+                                            <TableCell align="right">{row.parsingDate}</TableCell>
 
-                                            { icons[row.status] }
-
-                                            { stopButton(row.automateId, handleStop) }
-
-                                            <TableCell align="right">{row.type}</TableCell>
-                                            <TableCell align="right">{row.count}</TableCell>
-                                            <TableCell align="right">{row.targetValue}</TableCell>
-                                            <TableCell align="right">{row.realValue}</TableCell>
-                                            <TableCell align="right">{row.vtr}</TableCell>
-                                            <TableCell align="right">{spacedNumber(row.spent)}</TableCell>
-                                            <TableCell align="right">{spacedNumber(row.reach)}</TableCell>
-                                            <TableCell align="right">{row.cpm}</TableCell>
-                                            <TableCell align="right">{row.createDate}</TableCell>
-                                            <TableCell align="right">{row.finishDate}</TableCell>
 
                                         </TableRow>
                                     );

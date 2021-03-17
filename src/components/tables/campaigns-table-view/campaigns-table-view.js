@@ -13,13 +13,11 @@ import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Tooltip from '@material-ui/core/Tooltip';
-import PauseIcon from '@material-ui/icons/Pause';
+import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
-import Button from "@material-ui/core/Button";
 
 
 function spacedNumber(x) {
@@ -31,58 +29,44 @@ function spacedNumber(x) {
 
 const headCells = [
     { id: 'cover', align: 'left', label: '', tooltip: 'Обложка продвигаемого релиза' },
-    { id: 'campaign', align: 'left', label: 'Кампания', tooltip: 'Название автоматизированной кампании' },
-    { id: 'startValue', align: 'left',  label: 'Запуск', tooltip: 'Параметр запуска автоматизации' },
-    { id: 'stopValue', align: 'left',  label: 'Остановка', tooltip: 'Параметр остановки автоматизации' },
-    { id: 'status', align: 'left', label: 'Статус', tooltip: 'Статус автоматизации' },
-    { id: 'stopButton', align: 'left', label: 'Остановить', tooltip: 'Кнопка остановки автоматизации' },
-    { id: 'type', align: 'right', label: 'Параметр', tooltip: 'Автоматизируемый параметр' },
-    { id: 'count', align: 'right', label: 'Сумма', tooltip: 'Сумма единиц автоматизируемого параметра' },
-    { id: 'targetValue', align: 'right', label: 'tCPV', tooltip: 'target Cost Per Value - заданное значение автоматизируемого параметра' },
-    { id: 'realValue', align: 'right', label: 'rCPV', tooltip: 'real Cost Per Value - реальное значение автоматизируемого параметра' },
-    { id: 'vtr', align: 'right', label: 'VTR', tooltip: 'Value Through Rate - конверсия в автоматизируемый параметр из показов' },
+    { id: 'artist', align: 'left', label: 'Исполнитель', tooltip: 'Исполнитель (исполнители) продвигаемого релиза' },
+    { id: 'title', align: 'left', label: 'Название', tooltip: 'Название продвигаемого релиза' },
+    { id: 'status', align: 'right', label: 'Статус', tooltip: 'Статус кампании' },
+    { id: 'auto', align: 'right', label: 'Авт.', tooltip: 'Автоматизация ведения кампании' },
     { id: 'spent', align: 'right',  label: 'Потрачено', tooltip: 'Потраченная сумма в рублях' },
     { id: 'reach', align: 'right',  label: 'Показы', tooltip: 'Показы объявлений' },
-    { id: 'cpm', align: 'right',  label: 'CPM', tooltip: 'Стоимость тысячи показов' },
-    { id: 'createDate', align: 'right',  label: 'Дата создания', tooltip: 'Дата создания автоматизации' },
-    { id: 'finishDate', align: 'right',  label: 'Дата завершения', tooltip: 'Дата завершения автоматизации' },
+    { id: 'cpm', align: 'right',  label: 'CPM', tooltip: 'Стоимость тысячи показов в рублях' },
+    { id: 'listens', align: 'right',  label: 'Прослушивания', tooltip: 'Прослушивания на плейлистах (не равно стримы)' },
+    { id: 'cpl', align: 'right',  label: 'CPL', tooltip: 'Cost Per Listen - стоимость одного прослушивания в рублях' },
+    { id: 'ltr', align: 'right',  label: 'LTR', tooltip: 'Listen Through Rate - конверсия из показов в прослушивания' },
+    { id: 'saves', align: 'right',  label: 'Добавления', tooltip: 'Сохранения аудио и плейлистов из объявлений в аудиозаписях пользователей' },
+    { id: 'cps', align: 'right',  label: 'CPS', tooltip: 'Cost Per Save - стоимость одного сохранения в рублях' },
+    { id: 'str', align: 'right',  label: 'STR', tooltip: 'Save Through Rate - конверсия из показов в добавления' },
+    { id: 'date', align: 'right',  label: 'Дата', tooltip: 'Дата создания кампании' },
 ]
 
 
 const icons = [
 
     <Tooltip title='Остановлена' >
-        <TableCell align="center" >
+        <TableCell align="right" >
             <StopIcon color='disabled' />
         </TableCell>
     </Tooltip>,
 
     <Tooltip title='Запущена' >
-        <TableCell align="center">
+        <TableCell align="right">
             <PlayArrowIcon color='secondary'/>
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Ожидает времени запуска'>
-        <TableCell align="center" >
-            <PauseIcon color='disabled'/>
+    <Tooltip title='Архивирована'>
+        <TableCell align="right" >
+            <DeleteIcon color='disabled'/>
         </TableCell>
     </Tooltip>,
 
 ]
-
-
-function stopButton(automateId, handleStop) {
-    return (
-        <Tooltip title='Остановить автоматизацию' >
-            <TableCell align="center" >
-                <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
-                    <StopIcon color='error' onClick={() => handleStop(automateId)}/>
-                </Button>
-            </TableCell>
-        </Tooltip>
-    )
-}
 
 
 function descendingComparator(a, b, orderBy) {
@@ -127,18 +111,18 @@ function EnhancedTableHead(props) {
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <Tooltip title={headCell.tooltip} >
-                            <TableSortLabel
-                                active={orderBy === headCell.id}
-                                direction={orderBy === headCell.id ? order : 'asc'}
-                                onClick={createSortHandler(headCell.id)}
-                            >
-                                {headCell.label}
-                                {orderBy === headCell.id ? (
-                                    <span className={classes.visuallyHidden}>
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span>
-                                ) : null}
-                            </TableSortLabel>
+                            ) : null}
+                        </TableSortLabel>
                         </Tooltip>
                     </TableCell>
                 ))}
@@ -172,15 +156,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AutomatesTableView(props) {
+export default function CampaignsTableView(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('status');
+    const [orderBy, setOrderBy] = React.useState('date');
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const { rows, handleStop } = props
+    const { rows } = props
     const coverSize = dense ? {width: 30, height: 30} : {width: 50, height: 50}
 
     const handleRequestSort = (event, property) => {
@@ -242,27 +226,29 @@ export default function AutomatesTableView(props) {
 
                                             <TableCell align="left" >
                                                 <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    {row.campaign}
+                                                    {row.artist}
                                                 </Link>
                                             </TableCell>
 
-                                            <TableCell align="left">{row.startValue}</TableCell>
-                                            <TableCell align="left">{row.stopValue}</TableCell>
+                                            <TableCell align="left" >
+                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
+                                                    {row.title}
+                                                </Link>
+                                            </TableCell>
 
                                             { icons[row.status] }
+                                            { icons[row.isAutomate] }
 
-                                            { stopButton(row.automateId, handleStop) }
-
-                                            <TableCell align="right">{row.type}</TableCell>
-                                            <TableCell align="right">{row.count}</TableCell>
-                                            <TableCell align="right">{row.targetValue}</TableCell>
-                                            <TableCell align="right">{row.realValue}</TableCell>
-                                            <TableCell align="right">{row.vtr}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.spent)}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.reach)}</TableCell>
                                             <TableCell align="right">{row.cpm}</TableCell>
-                                            <TableCell align="right">{row.createDate}</TableCell>
-                                            <TableCell align="right">{row.finishDate}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.listens)}</TableCell>
+                                            <TableCell align="right">{row.cpl}</TableCell>
+                                            <TableCell align="right">{row.ltr}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.saves)}</TableCell>
+                                            <TableCell align="right">{row.cps}</TableCell>
+                                            <TableCell align="right">{row.str}</TableCell>
+                                            <TableCell align="right">{row.date}</TableCell>
 
                                         </TableRow>
                                     );

@@ -14,6 +14,7 @@ import ChartsPage from "./charts-page";
 import ArtistsPage from "./artists-page";
 import ArtistPage from "./artist-page";
 import AdsPage from "./ads-page";
+import AudiosPage from "./audios-page";
 
 
 
@@ -35,6 +36,10 @@ const Pages = () => {
 
             <Route path='/parsers' component={ParsersPage} />
             <Route path='/new_parser' component={NewParserPage} />
+            <Route path='/parser/:id?' render={({match}) => {
+                const {id} = match.params
+                return <AudiosPage parserId={id} />
+            }}/>
 
             <Route path='/grabbers' component={GrabbersPage} />
             <Route path='/new_grabber' component={NewGrabberPage} />

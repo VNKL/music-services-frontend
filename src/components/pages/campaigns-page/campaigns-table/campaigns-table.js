@@ -1,7 +1,7 @@
 import React from 'react';
 import ApiService from "../../../../services/api-service";
 import Spinner from "../../../spinner";
-import CampaignsTableView from "../../../tables/campaigns-table_view";
+import CampaignsTableView from "../../../tables/campaigns-table-view";
 
 
 

@@ -8,55 +8,74 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Avatar from "@material-ui/core/Avatar";
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import StopIcon from '@material-ui/icons/Stop';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-
+import ErrorIcon from '@material-ui/icons/Error';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import NotInterestedIcon from '@material-ui/icons/NotInterested';
+import DoneIcon from '@material-ui/icons/Done';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
+import LinkIcon from "@material-ui/icons/Link";
+
+
+function spacedNumber(x) {
+    if (x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+}
 
 
 const headCells = [
-    { id: 'cover', align: 'left', label: '', tooltip: 'Обложка продвигаемого релиза' },
-    { id: 'artist', align: 'left', label: 'Исполнитель', tooltip: 'Исполнитель (исполнители) продвигаемого релиза' },
-    { id: 'title', align: 'left', label: 'Название', tooltip: 'Название продвигаемого релиза' },
-    { id: 'status', align: 'right', label: 'Статус', tooltip: 'Статус кампании' },
-    { id: 'auto', align: 'right', label: 'Авт.', tooltip: 'Автоматизация ведения кампании' },
-    { id: 'spent', align: 'right',  label: 'Потрачено', tooltip: 'Потраченная сумма в рублях' },
-    { id: 'reach', align: 'right',  label: 'Показы', tooltip: 'Показы объявлений' },
-    { id: 'cpm', align: 'right',  label: 'CPM', tooltip: 'Стоимость тысячи показов в рублях' },
-    { id: 'listens', align: 'right',  label: 'Прослушивания', tooltip: 'Прослушивания на плейлистах (не равно стримы)' },
-    { id: 'cpl', align: 'right',  label: 'CPL', tooltip: 'Cost Per Listen - стоимость одного прослушивания в рублях' },
-    { id: 'ltr', align: 'right',  label: 'LTR', tooltip: 'Listen Through Rate - конверсия из показов в прослушивания' },
-    { id: 'saves', align: 'right',  label: 'Добавления', tooltip: 'Сохранения аудио и плейлистов из объявлений в аудиозаписях пользователей' },
-    { id: 'cps', align: 'right',  label: 'CPS', tooltip: 'Cost Per Save - стоимость одного сохранения в рублях' },
-    { id: 'str', align: 'right',  label: 'STR', tooltip: 'Save Through Rate - конверсия из показов в добавления' },
-    { id: 'date', align: 'right',  label: 'Дата', tooltip: 'Дата создания кампании' },
+    { id: 'methodName', align: 'left', label: 'Метод', tooltip: 'Метод парсинга добавлений' },
+    { id: 'methodParam', align: 'left', label: 'Параметр', tooltip: 'Параметр метода парсинга добавлений' },
+    { id: 'parsSavers', align: 'center', label: 'Полная база', tooltip: 'Вариант сбора базы: полная база с айди пользователей или только количество добавлений' },
+    { id: 'status', align: 'center', label: 'Статус', tooltip: 'Статус парсера' },
+    { id: 'audiosCount', align: 'right', label: 'Аудиозаписи', tooltip: 'Количество собранных аудиозаписей' },
+    { id: 'saversCount', align: 'right', label: 'Добавления', tooltip: 'Сумма неуникальных добавлений у собранных аудиозаписей' },
+    { id: 'resultPath', align: 'right', label: 'База', tooltip: 'Ссылка на скачивание собранной базы' },
+    { id: 'startDate', align: 'right', label: 'Дата запуска', tooltip: 'Дата запуска парсера' },
+    { id: 'finishDate', align: 'right', label: 'Дата завершения', tooltip: 'Дата завершения парсинга' }
 ]
 
 
-const icons = [
+const statusIcons = [
 
-    <Tooltip title='Остановлена' >
-        <TableCell align="right" >
-            <StopIcon color='disabled' />
+    <Tooltip title='Ошибка' >
+        <TableCell align="center" >
+            <ErrorIcon color='error' />
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Запущена' >
-        <TableCell align="right">
+    <Tooltip title='Запущен' >
+        <TableCell align="center">
             <PlayArrowIcon color='secondary'/>
         </TableCell>
     </Tooltip>,
 
-    <Tooltip title='Архивирована'>
-        <TableCell align="right" >
-            <DeleteIcon color='disabled'/>
+    <Tooltip title='Завершен'>
+        <TableCell align="center" >
+            <CheckCircleIcon color='secondary'/>
+        </TableCell>
+    </Tooltip>,
+
+]
+
+
+const parsSaversIcons = [
+
+    <Tooltip title='Только количество добавлений' >
+        <TableCell align="center" >
+            <NotInterestedIcon color='disabled' />
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Полная база по добавлниям' >
+        <TableCell align="center">
+            <DoneIcon color='secondary'/>
         </TableCell>
     </Tooltip>,
 
@@ -105,18 +124,18 @@ function EnhancedTableHead(props) {
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <Tooltip title={headCell.tooltip} >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <span className={classes.visuallyHidden}>
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
+                            >
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span>
-                            ) : null}
-                        </TableSortLabel>
+                                ) : null}
+                            </TableSortLabel>
                         </Tooltip>
                     </TableCell>
                 ))}
@@ -150,16 +169,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function CampaignsTableView(props) {
+export default function ParsersTableView(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('date');
+    const [orderBy, setOrderBy] = React.useState('startDate');
     const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [dense, setDense] = React.useState(true);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const { rows } = props
-    const coverSize = dense ? {width: 30, height: 30} : {width: 50, height: 50}
+
+    const handleDownload = (path) => {
+        console.log(path)
+    }
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -212,37 +234,36 @@ export default function CampaignsTableView(props) {
                                             key={index}
                                         >
 
-                                            <TableCell align="left" >
-                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    <Avatar src={row.cover} alt='cover' style={coverSize} />
-                                                </Link>
-                                            </TableCell>
+                                            <Tooltip title='Открыть результат парсинга'>
+                                                <TableCell align="left" >
+                                                    <Link component={RouterLink} to={`/parser/${row.id}`} underline='none'>
+                                                        {row.methodName}
+                                                    </Link>
+                                                </TableCell>
+                                            </Tooltip>
 
-                                            <TableCell align="left" >
-                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    {row.artist}
-                                                </Link>
-                                            </TableCell>
+                                            <Tooltip title='Открыть результат парсинга'>
+                                                <TableCell align="left" >
+                                                    <Link component={RouterLink} to={`/parser/${row.id}`} underline='none'>
+                                                        {row.methodParam}
+                                                    </Link>
+                                                </TableCell>
+                                            </Tooltip>
 
-                                            <TableCell align="left" >
-                                                <Link component={RouterLink} to={`/ads/${row.campaignId}`} underline='none'>
-                                                    {row.title}
-                                                </Link>
-                                            </TableCell>
+                                            { parsSaversIcons[row.parsSavers] }
+                                            { statusIcons[row.status] }
 
-                                            { icons[row.status] }
-                                            { icons[row.isAutomate] }
+                                            <TableCell align="right">{spacedNumber(row.audiosCount)}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.saversCount)}</TableCell>
 
-                                            <TableCell align="right">{row.spent}</TableCell>
-                                            <TableCell align="right">{row.reach}</TableCell>
-                                            <TableCell align="right">{row.cpm}</TableCell>
-                                            <TableCell align="right">{row.listens}</TableCell>
-                                            <TableCell align="right">{row.cpl}</TableCell>
-                                            <TableCell align="right">{row.ltr}</TableCell>
-                                            <TableCell align="right">{row.saves}</TableCell>
-                                            <TableCell align="right">{row.cps}</TableCell>
-                                            <TableCell align="right">{row.str}</TableCell>
-                                            <TableCell align="right">{row.date}</TableCell>
+                                            <Tooltip title='Скачать результат парсинга'>
+                                                <TableCell align="right" onClick={() => {handleDownload(row.resultPath)}} >
+                                                    <LinkIcon color='secondary' style={{cursor: 'pointer'}}/>
+                                                </TableCell>
+                                            </Tooltip>
+
+                                            <TableCell align="right">{row.startDate}</TableCell>
+                                            <TableCell align="right">{row.finishDate}</TableCell>
 
                                         </TableRow>
                                     );

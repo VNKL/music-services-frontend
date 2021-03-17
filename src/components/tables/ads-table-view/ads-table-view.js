@@ -22,6 +22,13 @@ import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
 
 
+function spacedNumber(x) {
+    if (x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+}
+
+
 const headCells = [
     { id: 'name', align: 'left', label: 'Сегмент', tooltip: 'Аудитория, которой показывается объявление' },
     { id: 'approved', align: 'right', label: 'Модерация', tooltip: 'Статус модерации объявления' },
@@ -245,13 +252,13 @@ export default function AdsTableView(props) {
                                             <TableCell align="left">{row.name}</TableCell>
                                             { approvedIcons[row.approved] }
                                             { statusIcons[row.status] }
-                                            <TableCell align="right">{row.spent}</TableCell>
-                                            <TableCell align="right">{row.reach}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.spent)}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.reach)}</TableCell>
                                             <TableCell align="right">{row.cpm}</TableCell>
-                                            <TableCell align="right">{row.listens}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.listens)}</TableCell>
                                             <TableCell align="right">{row.cpl}</TableCell>
                                             <TableCell align="right">{row.ltr}</TableCell>
-                                            <TableCell align="right">{row.saves}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.saves)}</TableCell>
                                             <TableCell align="right">{row.cps}</TableCell>
                                             <TableCell align="right">{row.str}</TableCell>
 
