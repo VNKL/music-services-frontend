@@ -67,7 +67,7 @@ const icons = [
 
 function stopButton(automateId, handleStop) {
     return (
-        <Tooltip title='Остановлена' >
+        <Tooltip title='Остановить автоматизацию' >
             <TableCell align="center" >
                 <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
                     <StopIcon color='error' onClick={() => handleStop(automateId)}/>
