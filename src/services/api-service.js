@@ -324,7 +324,7 @@ export default class ApiService {
 
     _refactor_parser_params = (params) => {
         const param = _need_parser_param(params.method) ? params.param : 1
-        return  {[params.method]: param}
+        return  {[params.method]: param, count_only: params.countOnly ? 1 : 0}
     }
 
     _unpackAds = (ads) => {
@@ -336,12 +336,12 @@ export default class ApiService {
                 spent: ad.spent.toFixed(2),
                 reach: ad.reach,
                 cpm: ad.cpm.toFixed(2),
-                listens: ad.listens,
+                listens: ad.listens ? ad.listens : '0',
                 cpl: ad.cpl.toFixed(2),
-                ltr: `${(ad.lr * 100).toFixed(2)}%`,
-                saves: ad.saves,
+                ltr: `${(ad.lr * 100).toFixed(3)} %`,
+                saves: ad.saves ? ad.saves : '0',
                 cps: ad.cps.toFixed(2),
-                str: `${(ad.sr * 100).toFixed(2)}%`,
+                str: `${(ad.sr * 100).toFixed(3)} %`,
                 adUrl: `https://vk.com/ads?act=office&union_id=${ad.ad_id}`,
                 postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`
             }
@@ -416,12 +416,12 @@ export default class ApiService {
             spent: campaign.spent.toFixed(2),
             reach: campaign.reach,
             cpm: campaign.cpm.toFixed(2),
-            listens: campaign.listens,
+            listens: campaign.listens ? campaign.listens : '0',
             cpl: campaign.cpl.toFixed(2),
-            ltr: `${(campaign.lr * 100).toFixed(2)}%`,
-            saves: campaign.saves,
+            ltr: `${(campaign.lr * 100).toFixed(3)} %`,
+            saves: campaign.saves ? campaign.saves : '0',
             cps: campaign.cps.toFixed(2),
-            str: `${(campaign.sr * 100).toFixed(2)}%`,
+            str: `${(campaign.sr * 100).toFixed(3)} %`,
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
             ads: this._unpackAds(campaign.ads)
@@ -440,14 +440,14 @@ export default class ApiService {
                 title: campaign.title,
                 name: campaign.campaign_name,
                 spent: campaign.spent.toFixed(2),
-                reach: campaign.reach,
+                reach: campaign.reach ? campaign.reach : '0',
                 cpm: campaign.cpm.toFixed(2),
-                listens: campaign.listens,
+                listens: campaign.listens ? campaign.listens : '0',
                 cpl: campaign.cpl.toFixed(2),
-                ltr: `${(campaign.lr * 100).toFixed(2)}%`,
-                saves: campaign.saves,
+                ltr: `${(campaign.lr * 100).toFixed(3)} %`,
+                saves: campaign.saves ? campaign.saves : '0',
                 cps: campaign.cps.toFixed(2),
-                str: `${(campaign.sr * 100).toFixed(2)}%`,
+                str: `${(campaign.sr * 100).toFixed(3)} %`,
                 cover: campaign.cover_url,
                 date: new Date(campaign.create_date).toLocaleDateString()
             }

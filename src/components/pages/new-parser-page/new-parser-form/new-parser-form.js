@@ -113,7 +113,7 @@ const NewParserForm = (props) => {
                     onChange={handleChange}
                     helperText={state.placeholder ? 'Обязательно' : 'Оставь пустым'}
                     placeholder={state.placeholder}
-                    InputLabelProps={{shrink: !!state.placeholder}}
+                    InputLabelProps={{shrink: !!state.placeholder || !!state.param}}
                 />
             </Grid>
 
