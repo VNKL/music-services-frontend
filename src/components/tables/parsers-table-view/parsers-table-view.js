@@ -20,6 +20,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 import LinkIcon from "@material-ui/icons/Link";
+import ApiService from "../../../services/api-service";
 
 
 function spacedNumber(x) {
@@ -179,9 +180,11 @@ export default function ParsersTableView(props) {
 
     const { rows } = props
 
-    const handleDownload = (path) => {
-        console.log(path)
+    const handleDownload = (id, path) => {
+        const api = new ApiService()
+        api.downloadParsingResult(id, path)
     }
+
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -257,7 +260,7 @@ export default function ParsersTableView(props) {
                                             <TableCell align="right">{spacedNumber(row.saversCount)}</TableCell>
 
                                             <Tooltip title='Скачать результат парсинга'>
-                                                <TableCell align="right" onClick={() => {handleDownload(row.resultPath)}} >
+                                                <TableCell align="right" onClick={() => {handleDownload(row.id, row.resultPath)}}  >
                                                     <LinkIcon color='secondary' style={{cursor: 'pointer'}}/>
                                                 </TableCell>
                                             </Tooltip>

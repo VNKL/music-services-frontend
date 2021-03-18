@@ -1,3 +1,5 @@
+import * as streamSaver from "streamsaver";
+
 
 function _type_str_from_type_int(typeInt) {
     if (typeInt === 0) {
@@ -113,7 +115,8 @@ function _need_parser_param(method) {
 
 
 export default class ApiService {
-    _apiBaseUrl = 'http://127.0.0.1:8000/api/'
+    // _apiBaseUrl = 'http://127.0.0.1:8000/api/'
+    _apiBaseUrl = 'http://192.168.1.165:8000/api/'
     _vkTokenUrl = `https://oauth.vk.com/authorize?client_id=7669131&display=page&redirect_uri=${this._apiBaseUrl}users.bindVk&scope=360448&response_type=code&v=5.126`
 
     async _getResponse(method, params) {
@@ -149,6 +152,42 @@ export default class ApiService {
     async createParser(parser_params) {
         const params = this._refactor_parser_params(parser_params)
         await this._getResponse('parsers.add', params)
+    }
+
+    async downloadParsingResult(parserId,  resultPath) {
+        const url = `${this._apiBaseUrl}parsers.download?id=${parserId}`
+        const fileName = resultPath.replace('parsing_results/', '')
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
+                    .then(response => response.blob())
+                    .then(blob => {
+                        try {
+                            const fileStream = streamSaver.createWriteStream(fileName, {size: blob.size});
+                            const readableStream = blob.stream();
+
+                            if (window.WritableStream && readableStream.pipeTo) {
+                                return readableStream
+                                    .pipeTo(fileStream)
+                            }
+                            const writer = fileStream.getWriter();
+                            const reader = readableStream.getReader();
+
+                            window.onunload = () => writer.abort()
+
+                            const pump = () =>
+                                reader
+                                    .read()
+                                    .then(res =>
+                                        res.done ? writer.close() : writer.write(res.value).then(pump)
+                                    );
+                            pump();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    })
     }
 
     async getAds(campaignId) {
