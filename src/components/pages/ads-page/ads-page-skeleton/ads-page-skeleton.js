@@ -15,21 +15,26 @@ const AdsPageSkeleton = () => {
                 <Skeleton variant='rect' height={50}/>
             </Grid>
 
-            <Grid item xs>
-
-            </Grid>
+            <Grid item xs />
 
             <Grid item xs={2} sm={2} align='right'>
                 <Skeleton variant='rect' height={50}/>
             </Grid>
 
             <Grid item xs={12} sm={12} align='right'>
-                <Skeleton variant='rect' height={440}/>
+                <Skeleton variant='rect' height={530}/>
             </Grid>
+
+            <Grid item xs={2} sm={2} align='left'>
+                <Skeleton variant='rect' height={50}/>
+            </Grid>
+
+            <Grid item xs />
 
             <Grid item xs={2} sm={2} align='right'>
                 <Skeleton variant='rect' height={50}/>
             </Grid>
+
 
 
         </Grid>
