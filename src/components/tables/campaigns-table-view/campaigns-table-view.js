@@ -248,7 +248,7 @@ export default function CampaignsTableView(props) {
                                             <TableCell align="right">{spacedNumber(row.saves)}</TableCell>
                                             <TableCell align="right">{row.cps}</TableCell>
                                             <TableCell align="right">{row.str}</TableCell>
-                                            <TableCell align="right">{row.date}</TableCell>
+                                            <TableCell align="right">{new Date(row.date).toLocaleDateString()}</TableCell>
 
                                         </TableRow>
                                     );

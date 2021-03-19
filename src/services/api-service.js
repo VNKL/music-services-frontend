@@ -113,6 +113,10 @@ function _need_parser_param(method) {
     }
 }
 
+function roundToTwo(num) {
+    return +(Math.round(num + "e+2")  + "e-2");
+}
+
 
 export default class ApiService {
     // _apiBaseUrl = 'http://127.0.0.1:8000/api/'
@@ -132,6 +136,43 @@ export default class ApiService {
         } else {
             console.log(response.json())
         }
+    }
+
+    async _getDownloadResponse(method, params, fileName) {
+
+        const url = new URL(`${this._apiBaseUrl}${method}`)
+        url.search = new URLSearchParams(params).toString()
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
+            .then(response => response.blob())
+            .then(blob => {
+                try {
+                    const fileStream = streamSaver.createWriteStream(fileName, {size: blob.size});
+                    const readableStream = blob.stream();
+
+                    if (window.WritableStream && readableStream.pipeTo) {
+                        return readableStream
+                            .pipeTo(fileStream)
+                    }
+                    const writer = fileStream.getWriter();
+                    const reader = readableStream.getReader();
+
+                    window.onunload = () => writer.abort()
+
+                    const pump = () =>
+                        reader
+                            .read()
+                            .then(res =>
+                                res.done ? writer.close() : writer.write(res.value).then(pump)
+                            );
+                    pump();
+                } catch (e) {
+                    console.error(e);
+                }
+            })
     }
 
     async bindVk(username) {
@@ -154,40 +195,14 @@ export default class ApiService {
         await this._getResponse('parsers.add', params)
     }
 
+    async downloadCampaignStats(campaignId, fileName) {
+        this._getDownloadResponse('ads.downloadCampaignStats', {id: campaignId}, fileName)
+    }
+
     async downloadParsingResult(parserId,  resultPath) {
-        const url = `${this._apiBaseUrl}parsers.download?id=${parserId}`
         const fileName = resultPath.replace('parsing_results/', '')
+        this._getDownloadResponse('parsers.download', {id: parserId}, fileName)
 
-        fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {Authorization: `JWT ${localStorage.getItem('token')}`}})
-                    .then(response => response.blob())
-                    .then(blob => {
-                        try {
-                            const fileStream = streamSaver.createWriteStream(fileName, {size: blob.size});
-                            const readableStream = blob.stream();
-
-                            if (window.WritableStream && readableStream.pipeTo) {
-                                return readableStream
-                                    .pipeTo(fileStream)
-                            }
-                            const writer = fileStream.getWriter();
-                            const reader = readableStream.getReader();
-
-                            window.onunload = () => writer.abort()
-
-                            const pump = () =>
-                                reader
-                                    .read()
-                                    .then(res =>
-                                        res.done ? writer.close() : writer.write(res.value).then(pump)
-                                    );
-                            pump();
-                        } catch (e) {
-                            console.error(e);
-                        }
-                    })
     }
 
     async getAds(campaignId) {
@@ -333,14 +348,14 @@ export default class ApiService {
                 approved: ad.approved,
                 status: ad.status,
                 name: ad.ad_name,
-                spent: ad.spent.toFixed(2),
-                reach: ad.reach,
-                cpm: ad.cpm.toFixed(2),
+                spent: ad.spent ? roundToTwo(ad.spent) : '0.00',
+                reach: ad.reach ? ad.reach : '0',
+                cpm: roundToTwo(ad.cpm),
                 listens: ad.listens ? ad.listens : '0',
-                cpl: ad.cpl.toFixed(2),
+                cpl: roundToTwo(ad.cpl),
                 ltr: `${(ad.lr * 100).toFixed(3)} %`,
                 saves: ad.saves ? ad.saves : '0',
-                cps: ad.cps.toFixed(2),
+                cps: roundToTwo(ad.cps),
                 str: `${(ad.sr * 100).toFixed(3)} %`,
                 adUrl: `https://vk.com/ads?act=office&union_id=${ad.ad_id}`,
                 postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`
@@ -355,7 +370,7 @@ export default class ApiService {
                 title: audio.title,
                 saversCount: audio.savers_count,
                 source: audio.source,
-                date: new Date(audio.date).toLocaleString(),
+                date: new Date(audio.date).toLocaleDateString(),
                 parsingDate: new Date(audio.parsing_date).toLocaleString(),
                 mayBeCore: _may_audio_be_core(audio.owner_id, audio.audio_id),
                 postUrl: _post_url_for_audio(audio.post_owner_id, audio.post_id),
@@ -376,12 +391,12 @@ export default class ApiService {
                 status: automate.status,
                 type: _type_str_from_type_int(automate.type),
                 count: _count_from_automate(automate),
-                vtr: `${(_VTR_from_automate(automate) * 100).toFixed(2)}%` ,
+                vtr: `${(_VTR_from_automate(automate) * 100).toFixed(3)} %` ,
                 targetValue: automate.target_cost,
                 realValue: _realValue_from_automate(automate),
                 reach: automate.campaign.reach,
-                spent: automate.campaign.spent.toFixed(2),
-                cpm: automate.campaign.cpm.toFixed(2),
+                spent: roundToTwo(automate.campaign.spent),
+                cpm: roundToTwo(automate.campaign.cpm),
                 createDate: _date_str_from_param(automate.create_date),
                 finishDate: _date_str_from_param(automate.finish_date),
             }
@@ -413,17 +428,18 @@ export default class ApiService {
         return {
             campaignId: campaign.campaign_id,
             name: `${campaign.artist} - ${campaign.title}`,
-            spent: campaign.spent.toFixed(2),
+            spent: roundToTwo(campaign.spent),
             reach: campaign.reach,
-            cpm: campaign.cpm.toFixed(2),
+            cpm: roundToTwo(campaign.cpm),
             listens: campaign.listens ? campaign.listens : '0',
-            cpl: campaign.cpl.toFixed(2),
+            cpl: roundToTwo(campaign.cpl),
             ltr: `${(campaign.lr * 100).toFixed(3)} %`,
             saves: campaign.saves ? campaign.saves : '0',
             cps: campaign.cps.toFixed(2),
             str: `${(campaign.sr * 100).toFixed(3)} %`,
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
+            updateDate: new Date(campaign.update_date).toLocaleString(),
             ads: this._unpackAds(campaign.ads)
         }
     }
@@ -439,17 +455,18 @@ export default class ApiService {
                 artist: campaign.artist,
                 title: campaign.title,
                 name: campaign.campaign_name,
-                spent: campaign.spent.toFixed(2),
+                spent: roundToTwo(campaign.spent),
                 reach: campaign.reach ? campaign.reach : '0',
-                cpm: campaign.cpm.toFixed(2),
+                cpm: roundToTwo(campaign.cpm),
                 listens: campaign.listens ? campaign.listens : '0',
-                cpl: campaign.cpl.toFixed(2),
+                cpl: roundToTwo(campaign.cpl),
                 ltr: `${(campaign.lr * 100).toFixed(3)} %`,
                 saves: campaign.saves ? campaign.saves : '0',
-                cps: campaign.cps.toFixed(2),
+                cps: roundToTwo(campaign.cps),
                 str: `${(campaign.sr * 100).toFixed(3)} %`,
                 cover: campaign.cover_url,
-                date: new Date(campaign.create_date).toLocaleDateString()
+                date: campaign.create_date
+                // date: new Date(campaign.create_date).toLocaleDateString()
             }
         })
     }

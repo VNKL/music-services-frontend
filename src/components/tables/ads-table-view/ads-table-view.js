@@ -20,6 +20,8 @@ import HelpIcon from '@material-ui/icons/Help';
 import HourglassFullIcon from '@material-ui/icons/HourglassFull';
 import DoneIcon from '@material-ui/icons/Done';
 import CloseIcon from '@material-ui/icons/Close';
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 
 function spacedNumber(x) {
@@ -193,7 +195,7 @@ export default function AdsTableView(props) {
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const { rows } = props
+    const { rows, handleDownload } = props
 
     const handleClick = (url) => {
         window.open(url)
@@ -299,10 +301,21 @@ export default function AdsTableView(props) {
 
             </Paper>
 
-            <FormControlLabel
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Компактный вид"
-            />
+            <Grid container>
+                <Grid items align='left' xs={6}>
+                    <FormControlLabel
+                        control={<Switch checked={dense} onChange={handleChangeDense} />}
+                        label="Компактный вид"
+                    />
+                </Grid>
+
+                <Grid item align='right' xs={6}>
+                    <Button variant='contained' color='secondary' onClick={handleDownload} >
+                        Выгрузить статистику
+                    </Button>
+                </Grid>
+
+            </Grid>
         </div>
     );
 }

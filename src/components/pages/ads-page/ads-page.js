@@ -52,6 +52,14 @@ export default class AdsPage extends React.Component {
         window.open(url)
     }
 
+    handleDownload = () => {
+        if (this.state.campaign !== null) {
+            const campaignId = this.state.campaign.campaignId
+            const fileName = `${this.state.campaign.name} (${this.state.campaign.updateDate}).csv`
+            this.api.downloadCampaignStats(campaignId, fileName)
+        }
+    }
+
     render() {
 
         const {loading, hasData, ads, campaign} = this.state
@@ -59,7 +67,7 @@ export default class AdsPage extends React.Component {
                                             name={campaign.name}
                                             updateStats={this.updateStats}
                                             openCampaignInCabinet={this.openCampaignInCabinet}/> : null
-        const table = hasData ? <AdsTableView rows={ads} /> : null
+        const table = hasData ? <AdsTableView rows={ads} handleDownload={this.handleDownload}/> : null
         const spinner = loading ? <AdsPageSkeleton /> : null
         const error = hasData ? null : spinner ? null : <h2>Ошибка с получением данных</h2>
 
