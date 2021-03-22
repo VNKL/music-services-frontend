@@ -94,6 +94,8 @@ function _may_audio_be_core(owner_id, audio_id) {
         return 1
     } else if (ownerStr.indexOf('3717') !== -1) {
         return 1
+    // } else if (ownerStr.indexOf('-147845620') !== -1) {
+    //     return 1
     } else if (ownerStr.indexOf('-200') !== -1 && audioStr.slice(0, 4).toString() !== '4562') {
         return 1
     } else {
@@ -371,7 +373,7 @@ export default class ApiService {
                 saversCount: audio.savers_count,
                 source: audio.source,
                 date: new Date(audio.date).toLocaleDateString(),
-                parsingDate: new Date(audio.parsing_date).toLocaleString(),
+                parsingDate: new Date(audio.parsing_date).toISOString().replace('T', ' ').split('.')[0],
                 mayBeCore: _may_audio_be_core(audio.owner_id, audio.audio_id),
                 postUrl: _post_url_for_audio(audio.post_owner_id, audio.post_id),
                 chartPosition: audio.chart_position
@@ -439,7 +441,7 @@ export default class ApiService {
             str: `${(campaign.sr * 100).toFixed(2)} %`,
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
-            updateDate: new Date(campaign.update_date).toLocaleString(),
+            updateDate: campaign.update_date ? campaign.update_date.replace('T', ', ').split('.')[0] : '—',
             ads: this._unpackAds(campaign.ads)
         }
     }
@@ -455,7 +457,7 @@ export default class ApiService {
                 artist: campaign.artist,
                 title: campaign.title,
                 name: campaign.campaign_name,
-                spent: roundToTwo(campaign.spent),
+                spent: campaign.spent ? roundToTwo(campaign.spent) : '0',
                 reach: campaign.reach ? campaign.reach : '0',
                 cpm: roundToTwo(campaign.cpm),
                 listens: campaign.listens ? campaign.listens : '0',
@@ -478,8 +480,8 @@ export default class ApiService {
             methodParam: _parsing_method_param_true_to_line(parser.param),
             parsSavers: parser.count_only ? 0 : 1,
             status: parser.status,
-            audiosCount: parser.audios_count,
-            saversCount: parser.savers_count,
+            audiosCount: parser.audios_count ? parser.audios_count : '0',
+            saversCount: parser.savers_count ? parser.savers_count : '0',
             resultPath: parser.result_path,
             startDate: new Date(parser.start_date).toLocaleString(),
             finishDate: new Date(parser.finish_date).toLocaleString(),
@@ -495,8 +497,8 @@ export default class ApiService {
                 methodParam: _parsing_method_param_true_to_line(parser.param),
                 parsSavers: parser.count_only ? 0 : 1,
                 status: parser.status,
-                audiosCount: parser.audios_count,
-                saversCount: parser.savers_count,
+                audiosCount: parser.audios_count ? parser.audios_count : '0',
+                saversCount: parser.savers_count ? parser.savers_count : '0',
                 resultPath: parser.result_path,
                 startDate: new Date(parser.start_date).toLocaleString(),
                 finishDate: parser.finish_date ? new Date(parser.finish_date).toLocaleString() : '—' ,

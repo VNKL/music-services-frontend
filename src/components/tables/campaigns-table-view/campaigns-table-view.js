@@ -16,6 +16,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import ErrorIcon from '@material-ui/icons/Error';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 
@@ -63,6 +64,13 @@ const icons = [
     <Tooltip title='Архивирована'>
         <TableCell align="right" >
             <DeleteIcon color='disabled'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Ошибка. Невозможно создать объявления с заданными настройками.
+                    Запусти кампанию с другими настройками или другим референсным постом.'>
+        <TableCell align="right" >
+            <ErrorIcon color='error'/>
         </TableCell>
     </Tooltip>,
 
