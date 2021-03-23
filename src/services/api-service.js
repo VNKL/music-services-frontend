@@ -51,7 +51,7 @@ function _VTR_from_automate(automate) {
 
 function _date_str_from_param(param) {
     if (param) {
-        return new Date(param).toISOString().replace('T', ' ').split('.')[0]
+        return new Date(param).toLocaleString()
     } else {
         return '-'
     }
@@ -198,13 +198,17 @@ export default class ApiService {
     }
 
     async downloadCampaignStats(campaignId, fileName) {
-        this._getDownloadResponse('ads.downloadCampaignStats', {id: campaignId}, fileName)
+        await this._getDownloadResponse('ads.downloadCampaignStats', {id: campaignId}, fileName)
     }
 
     async downloadParsingResult(parserId,  resultPath) {
         const fileName = resultPath.replace('parsing_results/', '')
-        this._getDownloadResponse('parsers.download', {id: parserId}, fileName)
+        await this._getDownloadResponse('parsers.download', {id: parserId}, fileName)
+    }
 
+    async downloadParsingResultCsv(parserId, resultPath) {
+        const fileName = resultPath.replace('parsing_results/', '').replace('.zip', '.csv')
+        await this._getDownloadResponse('parsers.downloadCsv', {id: parserId}, fileName)
     }
 
     async getAds(campaignId) {
@@ -355,10 +359,10 @@ export default class ApiService {
                 cpm: roundToTwo(ad.cpm),
                 listens: ad.listens ? ad.listens : '0',
                 cpl: roundToTwo(ad.cpl),
-                ltr: `${(ad.lr * 100).toFixed(2)} %`,
+                ltr: roundToTwo(ad.lr * 100),
                 saves: ad.saves ? ad.saves : '0',
                 cps: roundToTwo(ad.cps),
-                str: `${(ad.sr * 100).toFixed(2)} %`,
+                str: roundToTwo(ad.sr * 100),
                 adUrl: `https://vk.com/ads?act=office&union_id=${ad.ad_id}`,
                 postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`
             }
@@ -370,7 +374,7 @@ export default class ApiService {
             return {
                 artist: audio.artist,
                 title: audio.title,
-                saversCount: audio.savers_count,
+                saversCount: audio.savers_count ? audio.savers_count : '0',
                 source: audio.source,
                 date: new Date(audio.date).toLocaleDateString(),
                 parsingDate: _date_str_from_param(audio.parsing_date),
@@ -435,10 +439,10 @@ export default class ApiService {
             cpm: roundToTwo(campaign.cpm),
             listens: campaign.listens ? campaign.listens : '0',
             cpl: roundToTwo(campaign.cpl),
-            ltr: `${(campaign.lr * 100).toFixed(2)} %`,
+            ltr: roundToTwo(campaign.lr * 100),
             saves: campaign.saves ? campaign.saves : '0',
             cps: campaign.cps.toFixed(2),
-            str: `${(campaign.sr * 100).toFixed(2)} %`,
+            str: roundToTwo(campaign.sr * 100),
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
             updateDate: _date_str_from_param(campaign.update_date),
@@ -462,10 +466,10 @@ export default class ApiService {
                 cpm: roundToTwo(campaign.cpm),
                 listens: campaign.listens ? campaign.listens : '0',
                 cpl: roundToTwo(campaign.cpl),
-                ltr: `${(campaign.lr * 100).toFixed(2)} %`,
+                ltr: roundToTwo(campaign.lr * 100),
                 saves: campaign.saves ? campaign.saves : '0',
                 cps: roundToTwo(campaign.cps),
-                str: `${(campaign.sr * 100).toFixed(2)} %`,
+                str: roundToTwo(campaign.lr * 100),
                 cover: campaign.cover_url,
                 date: campaign.create_date,
                 dateFormatted: new Date(campaign.create_date).toLocaleDateString()

@@ -8,12 +8,15 @@ import AudiosPageSkeleton from "./audios-page-skeleton";
 export default class AudiosPage extends React.Component {
 
     state = {
+        parserId: null,
+        resultPath: null,
         loading: true,
         audios: null,
         needChart: false,
         needPost: false,
         fromNewReleases: false,
-        hasData: false
+        hasData: false,
+        hasCsv: false
     }
     api = new ApiService()
 
@@ -30,6 +33,9 @@ export default class AudiosPage extends React.Component {
     onParserLoaded = (parser) => {
         if (typeof parser !== 'undefined') {
             this.setState({
+                hasCsv: !!parser.resultPath,
+                resultPath: parser.resultPath,
+                parserId: parser.id,
                 audios: parser.audios,
                 needChart: parser.methodName === 'Чарт ВК',
                 needPost: !(
@@ -50,10 +56,16 @@ export default class AudiosPage extends React.Component {
         }
     }
 
+    handleDownload = () => {
+        if (this.state.hasCsv) {
+            this.api.downloadParsingResultCsv(this.state.parserId, this.state.resultPath)
+        }
+    }
+
     render() {
 
-        const {loading, hasData, audios, needChart, needPost} = this.state
-        const table = hasData ? <AudiosTableView rows={audios} needChart={needChart} needPost={needPost} /> : null
+        const {loading, hasData, audios, needChart, needPost, hasCsv } = this.state
+        const table = hasData ? <AudiosTableView rows={audios} needChart={needChart} needPost={needPost} handleDownload={this.handleDownload} hasCsv={hasCsv} /> : null
         const spinner = loading ? <AudiosPageSkeleton /> : null
         const error = hasData ? null : spinner ? null : <h2>Ошибка с получением данных</h2>
 

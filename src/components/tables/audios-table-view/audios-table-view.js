@@ -15,6 +15,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import DoneIcon from '@material-ui/icons/Done';
 import LinkIcon from "@material-ui/icons/Link";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 
 function spacedNumber(x) {
@@ -161,7 +163,7 @@ export default function AudiosTableView(props) {
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const { rows, needChart, needPost } = props
+    const { rows, needChart, needPost, handleDownload, hasCsv } = props
 
     const headCells = getHeadCells(needChart, needPost)
 
@@ -274,10 +276,21 @@ export default function AudiosTableView(props) {
 
             </Paper>
 
-            <FormControlLabel
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Компактный вид"
-            />
+            <Grid container>
+                <Grid items align='left' xs={6}>
+                    <FormControlLabel
+                        control={<Switch checked={dense} onChange={handleChangeDense} />}
+                        label="Компактный вид"
+                    />
+                </Grid>
+
+                <Grid item align='right' xs={6}>
+                    { hasCsv ? <Button variant='contained'
+                                       color='secondary'
+                                       onClick={handleDownload} > Выгрузить статистику </Button> : null }
+                </Grid>
+
+            </Grid>
         </div>
     );
 }

@@ -259,10 +259,10 @@ export default function AdsTableView(props) {
                                             <TableCell align="right">{row.cpm}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.listens)}</TableCell>
                                             <TableCell align="right">{row.cpl}</TableCell>
-                                            <TableCell align="right">{row.ltr}</TableCell>
+                                            <TableCell align="right">{`${row.ltr} %`}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.saves)}</TableCell>
                                             <TableCell align="right">{row.cps}</TableCell>
-                                            <TableCell align="right">{row.str}</TableCell>
+                                            <TableCell align="right">{`${row.str} %`}</TableCell>
 
                                             <Tooltip title='Открыть объявление в ВК'>
                                                 <TableCell align="right" onClick={() => {handleClick(row.adUrl)}}>
