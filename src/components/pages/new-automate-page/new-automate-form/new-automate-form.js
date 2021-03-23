@@ -101,7 +101,7 @@ const NewAutomateForm = (props) => {
                     >
                         <option aria-label="None" value="" />
                         {campaigns.map((campaign, idx) => {
-                            return <option value={campaign.campaignId} key={idx}>{ `${campaign.name} (${campaign.date})` }</option>
+                            return <option value={campaign.campaignId} key={idx}>{ `${campaign.name} (${campaign.dateFormatted})` }</option>
                         })}
                     </NativeSelect>
                     <FormHelperText>Обязательно</FormHelperText>

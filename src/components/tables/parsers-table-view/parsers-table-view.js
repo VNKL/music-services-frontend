@@ -205,6 +205,21 @@ export default function ParsersTableView(props) {
         setDense(event.target.checked);
     };
 
+    const parsingResultCell = (id, path) => {
+        console.log(typeof path)
+        if (path !== null) {
+            return (
+                <Tooltip title='Скачать результат парсинга'>
+                    <TableCell align="right" onClick={() => {handleDownload(id, path)}}  >
+                        <LinkIcon color='secondary' style={{cursor: 'pointer'}}/>
+                    </TableCell>
+                </Tooltip>
+            )
+        } else {
+            return <TableCell />
+        }
+    }
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
@@ -259,11 +274,7 @@ export default function ParsersTableView(props) {
                                             <TableCell align="right">{spacedNumber(row.audiosCount)}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.saversCount)}</TableCell>
 
-                                            <Tooltip title='Скачать результат парсинга'>
-                                                <TableCell align="right" onClick={() => {handleDownload(row.id, row.resultPath)}}  >
-                                                    <LinkIcon color='secondary' style={{cursor: 'pointer'}}/>
-                                                </TableCell>
-                                            </Tooltip>
+                                            { parsingResultCell(row.id, row.resultPath) }
 
                                             <TableCell align="right">{row.startDate}</TableCell>
                                             <TableCell align="right">{row.finishDate}</TableCell>

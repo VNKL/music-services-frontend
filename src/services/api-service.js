@@ -51,7 +51,7 @@ function _VTR_from_automate(automate) {
 
 function _date_str_from_param(param) {
     if (param) {
-        return new Date(param).toLocaleDateString()
+        return new Date(param).toISOString().replace('T', ' ').split('.')[0]
     } else {
         return '-'
     }
@@ -373,7 +373,7 @@ export default class ApiService {
                 saversCount: audio.savers_count,
                 source: audio.source,
                 date: new Date(audio.date).toLocaleDateString(),
-                parsingDate: new Date(audio.parsing_date).toISOString().replace('T', ' ').split('.')[0],
+                parsingDate: _date_str_from_param(audio.parsing_date),
                 mayBeCore: _may_audio_be_core(audio.owner_id, audio.audio_id),
                 postUrl: _post_url_for_audio(audio.post_owner_id, audio.post_id),
                 chartPosition: audio.chart_position
@@ -441,7 +441,7 @@ export default class ApiService {
             str: `${(campaign.sr * 100).toFixed(2)} %`,
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
-            updateDate: campaign.update_date ? campaign.update_date.replace('T', ', ').split('.')[0] : '—',
+            updateDate: _date_str_from_param(campaign.update_date),
             ads: this._unpackAds(campaign.ads)
         }
     }
@@ -467,8 +467,8 @@ export default class ApiService {
                 cps: roundToTwo(campaign.cps),
                 str: `${(campaign.sr * 100).toFixed(2)} %`,
                 cover: campaign.cover_url,
-                date: campaign.create_date
-                // date: new Date(campaign.create_date).toLocaleDateString()
+                date: campaign.create_date,
+                dateFormatted: new Date(campaign.create_date).toLocaleDateString()
             }
         })
     }
@@ -499,9 +499,9 @@ export default class ApiService {
                 status: parser.status,
                 audiosCount: parser.audios_count ? parser.audios_count : '0',
                 saversCount: parser.savers_count ? parser.savers_count : '0',
-                resultPath: parser.result_path,
-                startDate: new Date(parser.start_date).toLocaleString(),
-                finishDate: parser.finish_date ? new Date(parser.finish_date).toLocaleString() : '—' ,
+                resultPath: parser.result_path ? parser.result_path : null,
+                startDate: _date_str_from_param(parser.start_date),
+                finishDate: _date_str_from_param(parser.finish_date),
             }
         })
     }
