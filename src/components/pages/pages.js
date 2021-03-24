@@ -1,6 +1,7 @@
 import React from "react";
 import {Route, Switch, Redirect} from "react-router-dom";
 
+import MainPage from "./main-page";
 import AutomatesPage from "./automates-page";
 import NewAutomatePage from "./new-automate-page";
 import CampaignsPage from "./campaigns-page";
@@ -55,6 +56,8 @@ const Pages = () => {
             }}/>
 
             <Route path='/charts' component={ChartsPage} />
+
+            <Route path='/' component={MainPage} />
 
             <Redirect to='/' />
 
