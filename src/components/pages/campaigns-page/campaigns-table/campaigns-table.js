@@ -1,8 +1,7 @@
 import React from 'react';
 import ApiService from "../../../../services/api-service";
-import Spinner from "../../../spinner";
 import CampaignsTableView from "../../../tables/campaigns-table-view";
-
+import CampaignsPageSkeleton from "../campaigns-page-skeleton";
 
 
 class CampaignsTable extends React.Component {
@@ -41,7 +40,7 @@ class CampaignsTable extends React.Component {
     render() {
         const {loading, hasData, campaigns} = this.state
         const table = hasData ? <CampaignsTableView rows={campaigns} /> : null
-        const spinner = loading ? <Spinner /> : null
+        const spinner = loading ? <CampaignsPageSkeleton /> : null
         const error = hasData ? null : spinner ? null : <h2>У тебя еще нет созданных кампаний</h2>
 
         return (
