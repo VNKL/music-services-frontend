@@ -31,6 +31,16 @@ const sortRetarget = (a, b) => {
 }
 
 
+function removeItemAll(arr, value) {
+    let i = 0;
+    while (i < arr.length) {
+        if (arr[i] === value) {
+            arr.splice(i, 1)
+        } else {++i}
+    }
+    return arr
+}
+
 
 export default class NewCampaignForm extends React.Component {
     api = new ApiService()
@@ -58,13 +68,17 @@ export default class NewCampaignForm extends React.Component {
         groupError: false,
         retarget: [],
         retargetNames: [],
-        emptyAds: 0
+        emptyAds: '0',
+        groupsActive: '',
+        musicians: '',
+        count: 0,
+        callbackField: undefined
     }
 
     handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value
-        this.setState({[name]: value})
+        this.setState({[name]: value}, () => {this.calculateSegmentsCount()})
 
         if (name === 'client') {
             this.loadRetarget({cabinet_id: this.state.cabinet, client_id: value})
@@ -73,6 +87,15 @@ export default class NewCampaignForm extends React.Component {
             this.handleAge(name, value)
         }
     };
+
+    calculateSegmentsCount = () => {
+        const {retargetNames, emptyAds, groupsActive, musicians} = this.state
+        const nRetarget = retargetNames.length
+        const nGroups = removeItemAll(groupsActive.split('\n'), '').length
+        const nMusicians = removeItemAll(musicians.split('\n'), '').length
+        this.setState({count: nRetarget + nGroups + nMusicians + parseInt(emptyAds)},
+            () => {if(this.state.count) {}})
+    }
 
     handleAge = (name, value) => {
 
@@ -158,13 +181,13 @@ export default class NewCampaignForm extends React.Component {
     }
 
     handleRetarget = (event) => {
-        this.setState({retargetNames: event.target.value})
+        this.setState({retargetNames: event.target.value}, () => {this.calculateSegmentsCount()})
     };
 
     handleRetargetDelete = (retargetName) => {
         const idx = this.state.retargetNames.indexOf(retargetName)
         this.setState({retargetNames: [...this.state.retargetNames.slice(0, idx),
-                ...this.state.retargetNames.slice(idx + 1)]})
+                ...this.state.retargetNames.slice(idx + 1)]}, () => {this.calculateSegmentsCount()})
     };
 
     loadRetarget = (param) => {

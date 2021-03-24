@@ -60,6 +60,14 @@ const NewCampaignFormView = (props) => {
         }
     }
 
+    const startText = () => {
+        let text = `Запустить`
+        if (state.count) {
+            text = `${text} (${state.count})`
+        }
+        return text
+    }
+
     const cabinetsIds = []
 
     return (
@@ -378,7 +386,7 @@ const NewCampaignFormView = (props) => {
                         fullWidth
                         onClick={startCampaign}
                 >
-                    Запустить
+                    {startText()}
                 </Button>
             </Grid>
 
