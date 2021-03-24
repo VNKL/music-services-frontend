@@ -35,7 +35,7 @@ const headCells = [
     { id: 'title', align: 'left', label: 'Название', tooltip: 'Название продвигаемого релиза' },
     { id: 'status', align: 'right', label: 'Статус', tooltip: 'Статус кампании' },
     { id: 'auto', align: 'right', label: 'Авт.', tooltip: 'Автоматизация ведения кампании' },
-    { id: 'spent', align: 'right',  label: 'Потрачено', tooltip: 'Потраченная сумма в рублях' },
+    { id: 'spent', align: 'right',  label: 'Расход', tooltip: 'Потраченная сумма в рублях' },
     { id: 'reach', align: 'right',  label: 'Показы', tooltip: 'Показы объявлений' },
     { id: 'cpm', align: 'right',  label: 'CPM', tooltip: 'Стоимость тысячи показов в рублях' },
     { id: 'listens', align: 'right',  label: 'Прослушивания', tooltip: 'Прослушивания на плейлистах (не равно стримы)' },
@@ -44,6 +44,7 @@ const headCells = [
     { id: 'saves', align: 'right',  label: 'Добавления', tooltip: 'Сохранения аудио и плейлистов из объявлений в аудиозаписях пользователей' },
     { id: 'cps', align: 'right',  label: 'CPS', tooltip: 'Cost Per Save - стоимость одного сохранения в рублях' },
     { id: 'str', align: 'right',  label: 'STR', tooltip: 'Save Through Rate - конверсия из показов в добавления' },
+    { id: 'audience', align: 'right',  label: 'Аудитория', tooltip: 'Сумма размеров аудиторий всех сегментов кампании' },
     { id: 'date', align: 'right',  label: 'Дата', tooltip: 'Дата создания кампании' },
 ]
 
@@ -268,7 +269,8 @@ export default function CampaignsTableView(props) {
                                             <TableCell align="right">{`${row.ltr} %`}</TableCell>
                                             <TableCell align="right">{spacedNumber(row.saves)}</TableCell>
                                             <TableCell align="right">{row.cps}</TableCell>
-                                            <TableCell align="right">{row.str}</TableCell>
+                                            <TableCell align="right">{`${row.str} %`}</TableCell>
+                                            <TableCell align="right">{spacedNumber(row.audienceCount)}</TableCell>
                                             <TableCell align="right">{new Date(row.date).toLocaleDateString()}</TableCell>
 
                                         </TableRow>

@@ -39,7 +39,7 @@ const headCells = [
     { id: 'audiosCount', align: 'right', label: 'Аудиозаписи', tooltip: 'Количество собранных аудиозаписей' },
     { id: 'saversCount', align: 'right', label: 'Добавления', tooltip: 'Сумма неуникальных добавлений у собранных аудиозаписей' },
     { id: 'resultPath', align: 'right', label: 'База', tooltip: 'Ссылка на скачивание собранной базы' },
-    { id: 'startDate', align: 'right', label: 'Дата запуска', tooltip: 'Дата запуска парсера' },
+    { id: 'startDate', align: 'right', label: 'Дата создания', tooltip: 'Дата запуска парсера' },
     { id: 'finishDate', align: 'right', label: 'Дата завершения', tooltip: 'Дата завершения парсинга' }
 ]
 

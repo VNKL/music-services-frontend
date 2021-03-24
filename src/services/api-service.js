@@ -364,7 +364,8 @@ export default class ApiService {
                 cps: roundToTwo(ad.cps),
                 str: roundToTwo(ad.sr * 100),
                 adUrl: `https://vk.com/ads?act=office&union_id=${ad.ad_id}`,
-                postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`
+                postUrl: `https://vk.com/wall-${ad.post_owner}_${ad.post_id}`,
+                audienceCount: ad.audience_count ? ad.audience_count : '—'
             }
         })
     }
@@ -446,7 +447,8 @@ export default class ApiService {
             cover: campaign.cover_url,
             date: new Date(campaign.create_date).toLocaleDateString(),
             updateDate: _date_str_from_param(campaign.update_date),
-            ads: this._unpackAds(campaign.ads)
+            ads: this._unpackAds(campaign.ads),
+            audienceCount: campaign.audience_count ? campaign.audience_count : '—'
         }
     }
 
@@ -472,7 +474,8 @@ export default class ApiService {
                 str: roundToTwo(campaign.lr * 100),
                 cover: campaign.cover_url,
                 date: campaign.create_date,
-                dateFormatted: new Date(campaign.create_date).toLocaleDateString()
+                dateFormatted: new Date(campaign.create_date).toLocaleDateString(),
+                audienceCount: campaign.audience_count ? campaign.audience_count : '—'
             }
         })
     }
