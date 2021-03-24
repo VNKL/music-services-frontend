@@ -17,6 +17,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import DoneIcon from '@material-ui/icons/Done';
+import PauseIcon from '@material-ui/icons/Pause';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 import LinkIcon from "@material-ui/icons/Link";
@@ -60,6 +61,12 @@ const statusIcons = [
     <Tooltip title='Завершен'>
         <TableCell align="center" >
             <CheckCircleIcon color='secondary'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Ожидает очереди'>
+        <TableCell align="center" >
+            <PauseIcon color='secondary'/>
         </TableCell>
     </Tooltip>,
 

@@ -287,7 +287,7 @@ export default function AudiosTableView(props) {
                 <Grid item align='right' xs={6}>
                     { hasCsv ? <Button variant='contained'
                                        color='secondary'
-                                       onClick={handleDownload} > Выгрузить статистику </Button> : null }
+                                       onClick={handleDownload} > Выгрузить таблицей </Button> : null }
                 </Grid>
 
             </Grid>

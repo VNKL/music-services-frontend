@@ -17,6 +17,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ErrorIcon from '@material-ui/icons/Error';
+import PauseIcon from '@material-ui/icons/Pause';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 
@@ -71,6 +72,18 @@ const icons = [
                     Запусти кампанию с другими настройками или другим референсным постом.'>
         <TableCell align="right" >
             <ErrorIcon color='error'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Ожидает очереди'>
+        <TableCell align="right" >
+            <PauseIcon color='disabled'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Запускается' >
+        <TableCell align="right">
+            <PlayArrowIcon color='disabled'/>
         </TableCell>
     </Tooltip>,
 
