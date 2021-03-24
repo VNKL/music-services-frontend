@@ -526,6 +526,12 @@ export default class ApiService {
             avaUrl: user.ava_url,
             balance: user.balance,
             hasToken: user.has_token,
+            canAds: user.can_ads,
+            canAnalyzers: user.can_analyzers,
+            canCharts: user.can_charts,
+            canGrabbers: user.can_grabbers,
+            canParsers: user.can_parsers,
+            canRelated: user.can_related
         }
     }
 }

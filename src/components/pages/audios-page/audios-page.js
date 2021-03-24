@@ -65,15 +65,19 @@ export default class AudiosPage extends React.Component {
     render() {
 
         const {loading, hasData, audios, needChart, needPost, hasCsv } = this.state
-        const table = hasData ? <AudiosTableView rows={audios} needChart={needChart} needPost={needPost} handleDownload={this.handleDownload} hasCsv={hasCsv} /> : null
-        const spinner = loading ? <AudiosPageSkeleton /> : null
-        const error = hasData ? null : spinner ? null : <h2>Ошибка с получением данных</h2>
+        const table = hasData ? <AudiosTableView rows={audios}
+                                                 needChart={needChart}
+                                                 needPost={needPost}
+                                                 handleDownload={this.handleDownload}
+                                                 hasCsv={hasCsv} /> : null
+        const skeleton = loading ? <AudiosPageSkeleton /> : null
+        const error = hasData ? null : skeleton ? null : <h2>Ошибка с получением данных</h2>
 
         return (
             <Grid container spacing={3} alignItems='center'>
 
                 <Grid item xs={12}>
-                    {spinner}
+                    {skeleton}
                 </Grid>
 
                 <Grid item xs={12}>

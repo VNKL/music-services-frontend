@@ -68,15 +68,15 @@ export default class AdsPage extends React.Component {
                                             updateStats={this.updateStats}
                                             openCampaignInCabinet={this.openCampaignInCabinet}/> : null
         const table = hasData ? <AdsTableView rows={ads} handleDownload={this.handleDownload}/> : null
-        const spinner = loading ? <AdsPageSkeleton /> : null
-        const error = hasData ? null : spinner ? null : <h2>Ошибка с получением данных</h2>
+        const skeleton = loading ? <AdsPageSkeleton /> : null
+        const error = hasData ? null : skeleton ? null : <h2>Ошибка с получением данных</h2>
 
         return (
             <Grid container spacing={3} alignItems='center'>
 
                 <Grid item xs={12}>
                     {header}
-                    {spinner}
+                    {skeleton}
                 </Grid>
 
                 <Grid item xs={12}>

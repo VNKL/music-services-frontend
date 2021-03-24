@@ -4,9 +4,12 @@ import Button from "@material-ui/core/Button";
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import AutomatesTable from "./automates-table";
+import ApiService from "../../../services/api-service";
+import NoPermissionsBackdrop from "../../no-permissions-backdrop";
+import Spinner from "../../spinner";
 
 
-const AutomatesPage = () => {
+const UserCanAutomatesPage = () => {
 
     return (
         <Grid container spacing={3}>
@@ -43,4 +46,32 @@ const AutomatesPage = () => {
 }
 
 
-export default AutomatesPage
+export default class AutomatesPage extends React.Component {
+
+    state = {
+        canAds: undefined,
+        loading: true,
+    }
+    api = new ApiService()
+    noPermissionsText = 'У тебя нет прав на использование модулей таргета'
+
+    componentDidMount() {
+        this.api.getUser().then(this.onUserLoaded)
+    }
+
+    onUserLoaded = (user) => {
+        this.setState({canAds: user.canAds, loading: false})
+    }
+
+    render() {
+        const {loading, canAds} = this.state
+        const page = canAds ? UserCanAutomatesPage() : <NoPermissionsBackdrop text={this.noPermissionsText}/>
+        const spinner = loading ? <Spinner/> : null
+        return (
+            <div>
+                {spinner}
+                {page}
+            </div>
+        )
+    }
+}

@@ -16,7 +16,7 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://www.instagram.com/vnkl_iam">
+            <Link color="inherit" href="https://vk.com/vnkl_iam">
                 VNKL
             </Link>{' '}
             {new Date().getFullYear()}
