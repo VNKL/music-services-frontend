@@ -7,6 +7,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 import UserBlock from "../user-block";
+import { useLocation } from 'react-router-dom'
 
 
 const drawerWidth = 240;
@@ -44,10 +45,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+const getLocationName = (path) => {
+    if (path === '/') {
+        return 'Тарифы'
+    } else if (path === '/campaigns') {
+        return 'Кампании'
+    } else if (path === '/automates') {
+        return 'Автоматизации'
+    } else if (path === '/parsers') {
+        return 'Добавления'
+    } else if (path === '/grabbers') {
+        return 'Промо-посты'
+    } else if (path === '/charts') {
+        return 'Чарты'
+    } else if (path === '/artists') {
+        return 'Артисты'
+    } else if (path === '/new_campaign') {
+        return 'Новая кампания'
+    } else if (path === '/new_parser') {
+        return 'Новые добавления'
+    } else if (path === '/new_automate') {
+        return 'Новая автоматизация'
+    } else if (path.indexOf('ads/') !== -1) {
+        return 'Объявления'
+    } else if (path.indexOf('parser/') !== -1) {
+        return 'Аудиозаписи'
+    }
+}
+
+
 const TopPanel = (props) => {
 
     const classes = useStyles();
-
+    const location = useLocation()
     const {open, handleDrawerOpen, user, onBindVk} = props
 
     return (
@@ -70,7 +100,7 @@ const TopPanel = (props) => {
                 </IconButton>
 
                 <Typography variant="h6" noWrap>
-                    Music Services
+                    {getLocationName(location.pathname)}
                 </Typography>
 
                 <div className={classes.avatar}>
