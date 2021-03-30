@@ -294,6 +294,10 @@ export default class ApiService {
         }
     }
 
+    async updateSegmentSizes(campaignId) {
+        await this._getResponse('ads.updateSegmentSizes', {id: campaignId})
+    }
+
 
     _refactor_automate_params = (params) => {
         const refactored_params = {

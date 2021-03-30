@@ -4,6 +4,13 @@ import ApiService from "../../../services/api-service";
 import AdsTableView from "../../tables/ads-table-view";
 import AdsHeader from "./ads-header";
 import AdsPageSkeleton from "./ads-page-skeleton";
+import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
+
+
+function UpdateSegmentSizesAlert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 export default class AdsPage extends React.Component {
@@ -12,7 +19,8 @@ export default class AdsPage extends React.Component {
         loading: true,
         ads: null,
         campaign: null,
-        hasData: false
+        hasData: false,
+        updateSegmentsIsStarting: false
     }
     api = new ApiService()
 
@@ -47,6 +55,11 @@ export default class AdsPage extends React.Component {
         this.api.updateAdsStat(this.campaignId).then(this.onAdsLoaded)
     }
 
+    updateSegmentSizes = () => {
+        this.setState({updateSegmentsIsStarting: true})
+        this.api.updateSegmentSizes(this.campaignId)
+    }
+
     openCampaignInCabinet = () => {
         const url = `https://vk.com/ads?act=office&union_id=${this.state.campaign.campaignId}`
         window.open(url)
@@ -60,31 +73,52 @@ export default class AdsPage extends React.Component {
         }
     }
 
+    handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({updateSegmentsIsStarting: false});
+    };
+
     render() {
 
         const {loading, hasData, ads, campaign} = this.state
         const header = hasData ? <AdsHeader cover={campaign.cover}
                                             name={campaign.name}
                                             updateStats={this.updateStats}
+                                            updateSegmentSizes={this.updateSegmentSizes}
                                             openCampaignInCabinet={this.openCampaignInCabinet}/> : null
         const table = hasData ? <AdsTableView rows={ads} handleDownload={this.handleDownload}/> : null
         const skeleton = loading ? <AdsPageSkeleton /> : null
         const error = hasData ? null : skeleton ? null : <h2>Ошибка с получением данных</h2>
 
         return (
-            <Grid container spacing={3} alignItems='center'>
+            <React.Fragment >
 
-                <Grid item xs={12}>
-                    {header}
-                    {skeleton}
+                <Grid container spacing={3} alignItems='center'>
+
+                    <Grid item xs={12}>
+                        {header}
+                        {skeleton}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        {table}
+                        {error}
+                    </Grid>
+
                 </Grid>
 
-                <Grid item xs={12}>
-                    {table}
-                    {error}
-                </Grid>
+                <Snackbar open={this.state.updateSegmentsIsStarting} autoHideDuration={6000}
+                          onClose={this.handleCloseCampaignIsStartingAlert}>
+                    <UpdateSegmentSizesAlert onClose={this.handleCloseAlert} severity="success">
+                        Размеры аудиторий обновляются, это займет некоторое время
+                    </UpdateSegmentSizesAlert>
+                </Snackbar>
 
-            </Grid>
+            </React.Fragment>
+
+
 
         )
     }

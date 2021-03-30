@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 
 const AdsHeader = (props) => {
 
-    const {updateStats, openCampaignInCabinet} = props
+    const {updateStats, updateSegmentSizes, openCampaignInCabinet} = props
 
     return (
         <Grid container alignItems='center' spacing={3}>
@@ -25,13 +25,25 @@ const AdsHeader = (props) => {
                 </Typography>
             </Grid>
 
-            <Grid item xs={3} sm={3} align='right'>
-                <Button variant='contained'
-                        color='secondary'
-                        onClick={updateStats}
-                >
-                    Обновить статистику
-                </Button>
+            <Grid item xs={3} sm={3}>
+                <Grid container spacing={1}>
+                    <Grid item xs={12} sm={12} align='right'>
+                        <Button variant='contained'
+                                color='secondary'
+                                onClick={updateStats}
+                        >
+                            Обновить статистику
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={12} align='right'>
+                        <Button variant='contained'
+                                color='disabled'
+                                onClick={updateSegmentSizes}
+                        >
+                            Обновить аудитории
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
 
         </Grid>
