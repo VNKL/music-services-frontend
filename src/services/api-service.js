@@ -471,7 +471,7 @@ export default class ApiService {
                 ltr: roundToTwo(campaign.lr * 100),
                 saves: campaign.saves ? campaign.saves : '0',
                 cps: roundToTwo(campaign.cps),
-                str: roundToTwo(campaign.lr * 100),
+                str: roundToTwo(campaign.sr * 100),
                 cover: campaign.cover_url,
                 date: campaign.create_date,
                 dateFormatted: new Date(campaign.create_date).toLocaleDateString(),

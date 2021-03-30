@@ -20,6 +20,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import ErrorIcon from "@material-ui/icons/Error";
 
 
 function spacedNumber(x) {
@@ -66,6 +67,12 @@ const icons = [
     <Tooltip title='Ожидает времени запуска'>
         <TableCell align="center" >
             <PauseIcon color='disabled'/>
+        </TableCell>
+    </Tooltip>,
+
+    <Tooltip title='Ошибка' >
+        <TableCell align="center" >
+            <ErrorIcon color='error' />
         </TableCell>
     </Tooltip>,
 
@@ -175,7 +182,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AutomatesTableView(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
-    const [orderBy, setOrderBy] = React.useState('status');
+    const [orderBy, setOrderBy] = React.useState('createDate');
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
