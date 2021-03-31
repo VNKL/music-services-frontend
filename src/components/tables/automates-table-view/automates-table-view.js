@@ -79,16 +79,21 @@ const icons = [
 ]
 
 
-function stopButton(automateId, handleStop) {
-    return (
-        <Tooltip title='Остановить автоматизацию' >
-            <TableCell align="center" >
-                <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
-                    <StopIcon color='error' onClick={() => handleStop(automateId)}/>
-                </Button>
-            </TableCell>
-        </Tooltip>
-    )
+function stopButton(automateId, handleStop, status) {
+
+    if (status === 0 || status === 3) {
+        return <TableCell />
+    } else {
+        return (
+            <Tooltip title='Остановить автоматизацию' >
+                <TableCell align="center" >
+                    <Button variant='text' style={{maxWidth: '50px', maxHeight: '30px', minWidth: '50px', minHeight: '30px'}} >
+                        <StopIcon color='error' onClick={() => handleStop(automateId)}/>
+                    </Button>
+                </TableCell>
+            </Tooltip>
+        )
+    }
 }
 
 
@@ -258,7 +263,7 @@ export default function AutomatesTableView(props) {
 
                                             { icons[row.status] }
 
-                                            { stopButton(row.automateId, handleStop) }
+                                            { stopButton(row.automateId, handleStop, row.status) }
 
                                             <TableCell align="right">{row.type}</TableCell>
                                             <TableCell align="right">{row.count}</TableCell>
